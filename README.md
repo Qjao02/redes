@@ -4,7 +4,7 @@ Those codes are just a simple implementation of Client and Server using Socket A
 
 ## Server
 
-Server is responsable for attempt de GET requisitions, and follow with some response. First Server receives a menssage of some cliente (it can be a browser), and get the request GET from client, currently the answer from server can be, a file (text, zip or jpg for example) or the 404 error and requires a file extension for give a right.
+Server is responsable for attempt de GET requisitions, and follow with some response. First Server receives a menssage of some cliente (it can be a browser), and get the request GET from client, currently the answer from server can be, a file (text, zip or jpg for example) or the 404 error.
 
 Run Server:
     
