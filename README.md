@@ -26,7 +26,7 @@ Example of requistion
     localhost:PORT/index.html
     
     
-## Dependencys
+## Dependencies
   
   Client and Server needs those follows python Librarys:
 *  Python 3
