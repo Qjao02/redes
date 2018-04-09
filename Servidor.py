@@ -127,7 +127,6 @@ def createListHtml(filePath,files,shareFolder):
 request = {}
 host = 'localhost'
 port = int(sys.argv[1])
-print(str(port))
 
 shareFolder = sys.argv[2]
 loadextensions = open('servConfig/extension.txt','r')
