@@ -125,7 +125,7 @@ def createListHtml(filePath,files,shareFolder):
     file.close()
     
 request = {}
-host = '10.0.0.248' 
+host = 'localhost'
 port = int(sys.argv[1])
 print(str(port))
 
