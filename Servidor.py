@@ -10,9 +10,10 @@ import socket
 import os 
 import datetime as dt
 import threading as th
+import sys
 
     
-def requestMessage (con,cliente,extensionDict):
+def requestMessage (con,cliente,extensionDict,shareFolder):
     
     print ("aguardando mensagem") 
     mensagem = con.recv(1048576).decode('utf-8')
@@ -38,7 +39,6 @@ def requestMessage (con,cliente,extensionDict):
         except:
             break
 
-    print(request['operation'].split())
     try:
         filepath = request['operation'].split()[1]
     except:
@@ -47,7 +47,7 @@ def requestMessage (con,cliente,extensionDict):
     if filepath == '/':
         nameFile = request['operation'].split()
 
-        file = open('content/Index.html','rb')
+        file = open(shareFolder + '/Index.html','rb')
 
         fileByte = file.read()
 
@@ -69,21 +69,21 @@ def requestMessage (con,cliente,extensionDict):
 
     else:
             
-        if os.path.isfile('content' + filepath) :
-            file = open('content'+filepath,'rb')
+        if os.path.isfile(shareFolder + filepath) :
+            file = open(shareFolder + filepath,'rb')
             respostaString = '\nHTTP/1.1 200 ok! \r\n'
             fileByte = file.read()
             index = filepath.rfind('.')
             keyExtension = filepath[index:]
             
-        elif os.path.isdir('content' + filepath):
+        elif os.path.isdir(shareFolder + filepath):
             
-            files = os.listdir('content' + filepath)
-            createListHtml(filepath,files)
+            files = os.listdir(shareFolder + filepath)
+            createListHtml(filepath,files,shareFolder)
             
             keyExtension = '.isdir'
             
-            file = open('content/temp/listDir.html','rb')
+            file = open(shareFolder+'/temp/listDir.html','rb')
             fileByte = file.read()
             respostaString = '\nHTTP/1.1 200 ok! \n'
             
@@ -102,19 +102,17 @@ def requestMessage (con,cliente,extensionDict):
             'Content-Length' : str(len(fileByte))
 
         }
-        print(resposta)
 
         for key,valor in resposta.items():
             respostaString = respostaString + key+': '+ valor + '\r\n'
         
         respostaString = respostaString + '\r\n'
-        print(respostaString)
         file.close()
         con.sendall( respostaString.encode('utf-8') + fileByte )
     con.close()
 
-def createListHtml(filePath,files):
-    file = open('content/temp/listDir.html','w')
+def createListHtml(filePath,files,shareFolder):
+    file = open(shareFolder + '/temp/listDir.html','w')
     file.write('<html>')
     file.write('<head><title>listDir</title></head>')
     file.write('<body>')
@@ -128,8 +126,10 @@ def createListHtml(filePath,files):
     
 request = {}
 host = '10.0.0.248' 
-port =  7000
+port = int(sys.argv[1])
+print(str(port))
 
+shareFolder = sys.argv[2]
 loadextensions = open('servConfig/extension.txt','r')
 extensionDict = {}
 
@@ -153,8 +153,7 @@ while True:
     con, cliente = serv_socket.accept() 
     print ('conectado')
     cons.add(con)
-    th.Thread(target=requestMessage,args=(con, cliente, extensionDict)).start()
-    print('numero de threads criadas = ' + str(cont))
+    th.Thread(target=requestMessage,args=(con, cliente, extensionDict,shareFolder)).start()
     
 
 
